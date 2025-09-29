@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Generator Resi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 30px;
+    }
+    .input-box {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .qr-result {
+      margin-top: 30px;
+    }
+    .qr-item {
+      margin-bottom: 25px;
+    }
+    .qr-item p {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Generator QR Code Resi</h2>
+
+  <input type="text" id="resiInput" class="input-box" placeholder="Masukkan nomor resi">
+  <button onclick="buatQR()" class="btn">Buat QR Code</button>
+
+  <div id="qrContainer" class="qr-result"></div>
+
+  <!-- Library QRCode.js -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script>
+    function buatQR() {
+      const resi = document.getElementById("resiInput").value.trim();
+      if (resi === "") {
+        alert("Masukkan nomor resi terlebih dahulu!");
+        return;
+      }
+
+      // Buat container untuk tiap QR
+      const item = document.createElement("div");
+      item.className = "qr-item";
+
+      // Tambahkan teks resi
+      const text = document.createElement("p");
+      text.textContent = resi;
+      item.appendChild(text);
+
+      // Tambahkan QR Code
+      const qrDiv = document.createElement("div");
+      item.appendChild(qrDiv);
+
+      new QRCode(qrDiv, {
+        text: resi,
+        width: 200,
+        height: 200
+      });
+
+      document.getElementById("qrContainer").appendChild(item);
+
+      // Reset input
+      document.getElementById("resiInput").value = "";
+    }
+  </script>
+</body>
+</html>
