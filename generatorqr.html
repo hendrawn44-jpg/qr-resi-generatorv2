@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>QR Code Generator Resi</title>
   <style>
     body {
@@ -15,6 +15,7 @@
       padding: 10px;
       font-size: 16px;
       resize: vertical;
+      white-space: pre-wrap; /* agar enter terlihat */
     }
     .btn {
       padding: 10px 20px;
@@ -24,17 +25,22 @@
     }
     .qr-result {
       margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
     }
     .qr-item {
-      margin-bottom: 25px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 220px;
     }
     .qr-item p {
       font-weight: bold;
       margin-bottom: 8px;
       text-align: center;
+      word-break: break-word;
     }
   </style>
 </head>
@@ -42,7 +48,7 @@
   <h2>Generator QR Code Resi</h2>
 
   <textarea id="resiInput" class="input-box" placeholder="Masukkan nomor resi (pisahkan dengan Enter)"></textarea>
-  <br><br>
+  <br /><br />
   <button onclick="buatQR()" class="btn">Buat QR Code</button>
   <button onclick="clearQR()" class="btn">Clear</button>
 
@@ -51,14 +57,18 @@
   <!-- Library QRCode.js -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <script>
+    const resiInput = document.getElementById("resiInput");
+    const qrContainer = document.getElementById("qrContainer");
+
     function buatQR() {
-      const resiText = document.getElementById("resiInput").value.trim();
+      const resiText = resiInput.value.trim();
+      clearQR();
+
       if (resiText === "") {
-        alert("Masukkan nomor resi terlebih dahulu!");
         return;
       }
 
-      // Pisahkan per baris
+      // Pisahkan per baris, filter baris kosong
       const resiList = resiText.split("\n").map(r => r.trim()).filter(r => r !== "");
 
       resiList.forEach(resi => {
@@ -78,16 +88,18 @@
           height: 200
         });
 
-        document.getElementById("qrContainer").appendChild(item);
+        qrContainer.appendChild(item);
       });
-
-      // Reset textarea
-      document.getElementById("resiInput").value = "";
     }
 
     function clearQR() {
-      document.getElementById("qrContainer").innerHTML = "";
+      qrContainer.innerHTML = "";
     }
+
+    // Auto generate QR saat input berubah
+    resiInput.addEventListener("input", () => {
+      buatQR();
+    });
   </script>
 </body>
 </html>
