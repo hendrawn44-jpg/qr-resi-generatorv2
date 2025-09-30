@@ -11,8 +11,10 @@
     }
     .input-box {
       width: 300px;
+      height: 120px;
       padding: 10px;
       font-size: 16px;
+      resize: vertical;
     }
     .btn {
       padding: 10px 20px;
@@ -25,18 +27,24 @@
     }
     .qr-item {
       margin-bottom: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .qr-item p {
       font-weight: bold;
       margin-bottom: 8px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <h2>Generator QR Code Resi</h2>
 
-  <input type="text" id="resiInput" class="input-box" placeholder="Masukkan nomor resi">
+  <textarea id="resiInput" class="input-box" placeholder="Masukkan nomor resi (pisahkan dengan Enter)"></textarea>
+  <br><br>
   <button onclick="buatQR()" class="btn">Buat QR Code</button>
+  <button onclick="clearQR()" class="btn">Clear</button>
 
   <div id="qrContainer" class="qr-result"></div>
 
@@ -44,35 +52,41 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <script>
     function buatQR() {
-      const resi = document.getElementById("resiInput").value.trim();
-      if (resi === "") {
+      const resiText = document.getElementById("resiInput").value.trim();
+      if (resiText === "") {
         alert("Masukkan nomor resi terlebih dahulu!");
         return;
       }
 
-      // Buat container untuk tiap QR
-      const item = document.createElement("div");
-      item.className = "qr-item";
+      // Pisahkan per baris
+      const resiList = resiText.split("\n").map(r => r.trim()).filter(r => r !== "");
 
-      // Tambahkan teks resi
-      const text = document.createElement("p");
-      text.textContent = resi;
-      item.appendChild(text);
+      resiList.forEach(resi => {
+        const item = document.createElement("div");
+        item.className = "qr-item";
 
-      // Tambahkan QR Code
-      const qrDiv = document.createElement("div");
-      item.appendChild(qrDiv);
+        const text = document.createElement("p");
+        text.textContent = resi;
+        item.appendChild(text);
 
-      new QRCode(qrDiv, {
-        text: resi,
-        width: 200,
-        height: 200
+        const qrDiv = document.createElement("div");
+        item.appendChild(qrDiv);
+
+        new QRCode(qrDiv, {
+          text: resi,
+          width: 200,
+          height: 200
+        });
+
+        document.getElementById("qrContainer").appendChild(item);
       });
 
-      document.getElementById("qrContainer").appendChild(item);
-
-      // Reset input
+      // Reset textarea
       document.getElementById("resiInput").value = "";
+    }
+
+    function clearQR() {
+      document.getElementById("qrContainer").innerHTML = "";
     }
   </script>
 </body>
